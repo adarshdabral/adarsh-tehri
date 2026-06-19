@@ -32,14 +32,18 @@ import { Stat } from "@/app/components/site/Stat";
 import { Button } from "@/app/components/ui/button";
 
 import {
-  homestays,
   products,
   activities,
   events,
   testimonials,
 } from "@/data";
 
-export default function HomePage() {
+import { getLandingHomestays } from "@/lib/homestays";
+import { HomestaySkeletonCard } from "@/app/components/site/HomestaySkeletonCard";
+const homestays = await getLandingHomestays();
+
+const skeletonCount = Math.max(0, 4 - homestays.length);
+export default async function HomePage() {
   return (
     <SiteShell transparentHeader>
       {/* HERO SECTION */}
