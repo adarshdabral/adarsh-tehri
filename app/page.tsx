@@ -7,8 +7,11 @@
 //     </main>
 //   );
 // }
-"use client";
 
+import { getLandingProducts } from "@/lib/products";
+
+import { getLandingActivities } from "@/lib/activities";
+import { ActivitySkeletonCard } from "@/app/components/site/ActivitySkeletonCard";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -31,19 +34,40 @@ import { EventCard } from "@/app/components/site/EventCard";
 import { Stat } from "@/app/components/site/Stat";
 import { Button } from "@/app/components/ui/button";
 
-import {
-  products,
-  activities,
-  events,
-  testimonials,
-} from "@/data";
+// import {
+//   products,
+//   activities,
+//   events,
+//   testimonials,
+// } from "@/data";
 
 import { getLandingHomestays } from "@/lib/homestays";
 import { HomestaySkeletonCard } from "@/app/components/site/HomestaySkeletonCard";
-const homestays = await getLandingHomestays();
 
-const skeletonCount = Math.max(0, 4 - homestays.length);
+
 export default async function HomePage() {
+
+  const homestays = await getLandingHomestays();
+
+  const skeletonCount = Math.max(
+    0,
+    4 - homestays.length
+  );
+  const activitiesData = await getLandingActivities();
+  const productsData = await getLandingProducts();
+  const productSkeletonCount = Math.max(
+  0,
+  6 - productsData.length
+);
+
+
+const activitySkeletonCount = Math.max(
+  0,
+  6 - activitiesData.length
+);
+
+
+
   return (
     <SiteShell transparentHeader>
       {/* HERO SECTION */}
@@ -135,6 +159,13 @@ export default async function HomePage() {
           {homestays.slice(0, 4).map((h, i) => (
             <HomestayCard key={h.id} h={h} index={i} />
           ))}
+          {Array.from({
+  length: skeletonCount,
+}).map((_, i) => (
+  <HomestaySkeletonCard
+    key={`homestay-skeleton-${i}`}
+  />
+))}
         </div>
       </section>
 
@@ -149,9 +180,22 @@ export default async function HomePage() {
           />
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {activities.slice(0, 6).map((a, i) => (
-              <ActivityCard key={a.id} a={a} index={i} />
-            ))}
+           {activitiesData.map((a, i) => (
+  <ActivityCard
+    key={a._id}
+    a={a}
+    index={i}
+  />
+))}
+
+{Array.from({
+  length: activitySkeletonCount,
+}).map((_, i) => (
+  <ActivitySkeletonCard
+    key={`activity-skeleton-${i}`}
+    index={i}
+  />
+))}
           </div>
         </div>
       </section>
@@ -165,9 +209,28 @@ export default async function HomePage() {
         />
 
         <div className="grid md:grid-cols-3 gap-6">
-          {events.slice(0, 3).map((e, i) => (
-            <EventCard key={e.id} e={e} index={i} large />
-          ))}
+          <>
+ <>
+  {activitiesData.slice(0, 3).map((e, i) => (
+    <EventCard
+      key={e._id}
+      e={e}
+      index={i}
+      large
+    />
+  ))}
+
+  {Array.from({
+    length: Math.max(0, 3 - activitiesData.length),
+  }).map((_, i) => (
+    <div
+      key={`event-skeleton-${i}`}
+      className="aspect-[16/11] rounded-2xl bg-gray-200 animate-pulse"
+    />
+  ))}
+</>
+
+ 
         </div>
       </section>
 
@@ -181,11 +244,27 @@ export default async function HomePage() {
           />
 
           <div className="grid grid-cols-2 lg:grid-cols-6 gap-6">
-            {products.slice(0, 6).map((p, i) => (
-              <ProductCard key={p.id} p={p} index={i} />
-            ))}
+
+  {productsData.map((p, i) => (
+    <ProductCard
+      key={p._id}
+      p={p}
+      index={i}
+    />
+  ))}
+
+  {Array.from({
+    length: productSkeletonCount,
+  }).map((_, i) => (
+    <div
+      key={`product-skeleton-${i}`}
+      className="h-64 rounded-xl bg-gray-200 animate-pulse"
+    />
+  ))}
+
+</div>
           </div>
-        </div>
+        
       </section>
 
       {/* IMPACT */}
@@ -213,7 +292,7 @@ export default async function HomePage() {
 
       {/* TESTIMONIALS */}
 
-      <section className="bg-black text-white py-24">
+      {/* <section className="bg-black text-white py-24">
         <div className="container-app">
           <h2 className="text-5xl font-bold max-w-3xl">
             It feels less like a booking and more like coming home.
@@ -234,7 +313,7 @@ export default async function HomePage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
     </SiteShell>
   );
 }

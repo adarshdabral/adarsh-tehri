@@ -1,8 +1,19 @@
-import { Link } from "@tanstack/react-router";
+import Link from "next/link";
 import { Clock, Users, MapPin } from "lucide-react";
-import type { Activity } from "@/data";
+
 import { inr } from "./format";
 import { motion } from "framer-motion";
+type Activity = {
+  _id: string;
+  title: string;
+  category: string;
+  image?: string;
+  village: string;
+  duration: string;
+  groupSize: string;
+  price: number;
+  difficulty: string;
+};
 
 export function ActivityCard({ a, index = 0 }: { a: Activity; index?: number }) {
   return (
@@ -13,9 +24,21 @@ export function ActivityCard({ a, index = 0 }: { a: Activity; index?: number }) 
       transition={{ delay: index * 0.05, duration: 0.5 }}
       className="group overflow-hidden rounded-2xl border border-hairline bg-card transition hover:shadow-lift"
     >
-      <Link to="/activities/$id" params={{ id: a.id }} className="block">
+      <Link
+  href={`/activities/${a._id}`}
+  className="block"
+>
         <div className="relative overflow-hidden">
-          <img src={a.image} alt={a.title} loading="lazy" className="aspect-[5/4] w-full object-cover transition duration-700 group-hover:scale-105" />
+          <img
+  src={
+    a.image && a.image.trim() !== ""
+      ? a.image
+      : "https://placehold.co/600x500?text=No+Image"
+  }
+  alt={a.title}
+  loading="lazy"
+  className="aspect-[5/4] w-full object-cover transition duration-700 group-hover:scale-105"
+/>
           <div className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium backdrop-blur">{a.category}</div>
         </div>
         <div className="space-y-2 p-5">
