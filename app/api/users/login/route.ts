@@ -4,7 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-connect();
+// initialize connection lazily
+try {
+  void connect();
+} catch {}
 
 export async function POST(request: NextRequest) {
   try {
@@ -40,13 +43,12 @@ export async function POST(request: NextRequest) {
       role: user.role,
     };
 
-    const token = jwt.sign(
-      tokenData,
-      process.env.TOKEN_SECRET!,
-      {
-        expiresIn: "1d",
-      }
-    );
+    const tokenSecret = process.env.TOKEN_SECRET;
+    if (!tokenSecret) {
+      return NextResponse.json({ error: "Server misconfiguration" }, { status: 500 });
+    }
+
+    const token = jwt.sign(tokenData, tokenSecret, { expiresIn: "1d" });
 
     const response = NextResponse.json({
       message: "Login successful",
@@ -54,16 +56,17 @@ export async function POST(request: NextRequest) {
     });
 
     response.cookies.set("token", token, {
-  httpOnly: true,
-  path: "/",
-  sameSite: "lax",
-  secure: false,
-});
+      httpOnly: true,
+      path: "/",
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
 
     return response;
-  } catch (error: any) {
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      { error: error.message },
+      { error: msg },
       { status: 500 }
     );
   }

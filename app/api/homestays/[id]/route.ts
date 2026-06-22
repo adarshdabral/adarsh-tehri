@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { connect } from "@/dbConfig/dbConfig";
 import Homestay from "@/model/Homestay";
 
-connect();
+// prefer connecting lazily inside handlers
+try {
+  void connect();
+} catch {}
 
 export async function GET(
   request: Request,
@@ -26,11 +29,12 @@ export async function GET(
       success: true,
       homestay,
     });
-  } catch (error: any) {
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       {
         success: false,
-        error: error.message,
+        error: msg,
       },
       { status: 500 }
     );

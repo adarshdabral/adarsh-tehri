@@ -25,7 +25,7 @@ export default function AuthForm({ mode }: Props) {
     e.preventDefault();
 
     // Backend integration later
-    console.log(formData);
+    // form submitted
 
     // Temporary redirect
 

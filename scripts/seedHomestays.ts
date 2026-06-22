@@ -60,15 +60,20 @@ const sampleHomestays = [
 
 async function seedDatabase() {
   try {
+    // prevent accidental run in production — require FORCE_SEED env var
+    if (process.env.NODE_ENV === "production" && process.env.FORCE_SEED !== "true") {
+      console.error("Refusing to run seed in production without FORCE_SEED=true");
+      process.exit(1);
+    }
+
     await connect();
 
     await Homestay.deleteMany({});
-
     await Homestay.insertMany(sampleHomestays);
 
     console.log("Homestays inserted successfully");
 
-    mongoose.connection.close();
+    await mongoose.connection.close();
   } catch (error) {
     console.error("Seeding failed:", error);
   }

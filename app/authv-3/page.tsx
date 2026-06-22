@@ -39,10 +39,12 @@ export default function AuthV3() {
         setIsLogin(true);
         setMessage("");
       }, 1500);
-    } catch (error: any) {
-      setMessage(
-        error?.response?.data?.error || "Signup failed"
-      );
+    } catch (error) {
+      let errMsg = "Signup failed";
+      if (error instanceof Error) errMsg = error.message;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((error as any)?.response?.data?.error) errMsg = (error as any).response.data.error;
+      setMessage(errMsg);
     } finally {
       setLoading(false);
     }
@@ -63,10 +65,12 @@ export default function AuthV3() {
       setTimeout(() => {
         router.push("/dashboard");
       }, 1000);
-    } catch (error: any) {
-      setMessage(
-        error?.response?.data?.error || "Login failed"
-      );
+    } catch (error) {
+      let errMsg = "Login failed";
+      if (error instanceof Error) errMsg = error.message;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((error as any)?.response?.data?.error) errMsg = (error as any).response.data.error;
+      setMessage(errMsg);
     } finally {
       setLoading(false);
     }
@@ -113,7 +117,7 @@ export default function AuthV3() {
           >
             Discover
             <span className="block text-[#D7BE69]">
-              Tehri's
+              Tehri&apos;s
             </span>
             Digital Future
           </h1>

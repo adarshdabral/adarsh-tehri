@@ -6,20 +6,23 @@ type ConnectionObject = {
 
 const connection: ConnectionObject = {};
 
-export async function connect(): Promise<void> {
+export async function connect(): Promise<typeof mongoose> {
   if (connection.isConnected) {
-    console.log("Already connected to database");
-    return;
+    return mongoose;
+  }
+
+  const mongoUri = process.env.MONGODB_URI;
+  if (!mongoUri) {
+    throw new Error("MONGODB_URI environment variable is not set");
   }
 
   try {
-    const db = await mongoose.connect(process.env.MONGODB_URI || "");
+    const db = await mongoose.connect(mongoUri, {});
 
     connection.isConnected = db.connection.readyState;
 
-    console.log("DB connected successfully");
+    return mongoose;
   } catch (error) {
-    console.log("DB connection failed", error);
-    process.exit(1);
+    throw error;
   }
 }

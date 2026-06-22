@@ -1,113 +1,82 @@
-// import Hero from "./components/Hero";
+import Image from "next/image";
 
-// export default function Home() {
-//   return (
-//     <main>
-//       <Hero />
-//     </main>
-//   );
-// }
-
-import { getLandingProducts } from "@/lib/products";
-
-import { getLandingActivities } from "@/lib/activities";
-import { ActivitySkeletonCard } from "@/app/components/site/ActivitySkeletonCard";
-import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   Search,
   MapPin,
   Users,
-  ArrowRight,
   Sparkles,
-  Quote,
 } from "lucide-react";
 
 import heroImg from "@/assets/hero-tehri-lake.jpg";
 
-import { SiteShell } from "@/app/components/site/SiteShell";
-import { SectionHeader } from "@/app/components/site/SectionHeader";
-import { HomestayCard } from "@/app/components/site/HomestayCard";
-import { ProductCard } from "@/app/components/site/ProductCard";
-import { ActivityCard } from "@/app/components/site/ActivityCard";
-import { EventCard } from "@/app/components/site/EventCard";
-import { Stat } from "@/app/components/site/Stat";
-import { Button } from "@/app/components/ui/button";
-
-// import {
-//   products,
-//   activities,
-//   events,
-//   testimonials,
-// } from "@/data";
-
 import { getLandingHomestays } from "@/lib/homestays";
-import { HomestaySkeletonCard } from "@/app/components/site/HomestaySkeletonCard";
+import { getLandingActivities } from "@/lib/activities";
+import { getLandingProducts } from "@/lib/products";
 
+import { SiteShell } from "@/components/site/SiteShell";
+import { SectionHeader } from "@/components/site/SectionHeader";
+import { HomestayCard } from "@/components/site/HomestayCard";
+import { ProductCard } from "@/components/site/ProductCard";
+import { ActivityCard } from "@/components/site/ActivityCard";
+import { EventCard } from "@/components/site/EventCard";
+import { Stat } from "@/components/site/Stat";
+import { Button } from "@/components/ui/button";
+
+import { HomestaySkeletonCard } from "@/components/site/HomestaySkeletonCard";
+import { ActivitySkeletonCard } from "@/components/site/ActivitySkeletonCard";
+
+import { HeroContent } from "@/components/site/HeroContent";
 
 export default async function HomePage() {
+  const [
+    homestays,
+    activitiesData,
+    productsData,
+  ] = await Promise.all([
+    getLandingHomestays(),
+    getLandingActivities(),
+    getLandingProducts(),
+  ]);
 
-  const homestays = await getLandingHomestays();
-
-  const skeletonCount = Math.max(
+  const homestaySkeletonCount = Math.max(
     0,
     4 - homestays.length
   );
-  const activitiesData = await getLandingActivities();
-  const productsData = await getLandingProducts();
+
+  const activitySkeletonCount = Math.max(
+    0,
+    6 - activitiesData.length
+  );
+
   const productSkeletonCount = Math.max(
-  0,
-  6 - productsData.length
-);
-
-
-const activitySkeletonCount = Math.max(
-  0,
-  6 - activitiesData.length
-);
-
-
+    0,
+    6 - productsData.length
+  );
 
   return (
     <SiteShell transparentHeader>
-      {/* HERO SECTION */}
-
+      {/* HERO */}
       <section className="relative h-screen min-h-[640px] overflow-hidden">
-        <img
-          src={heroImg.src}
+        <Image
+          src={heroImg}
           alt="Tehri Lake"
-          className="absolute inset-0 h-full w-full object-cover"
+          fill
+          priority
+          className="object-cover"
         />
 
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-black/60" />
 
         <div className="relative z-10 flex h-full items-center">
           <div className="container-app text-white">
-            <motion.div
-              initial={{ opacity: 0, y: 25 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="max-w-3xl"
-            >
-              <div className="eyebrow text-white/80">
-                Tehri Garhwal • Uttarakhand
-              </div>
-
-              <h1 className="mt-4 text-5xl md:text-7xl font-bold">
-                Where the lake holds the sky — and the village holds the story.
-              </h1>
-
-              <p className="mt-6 max-w-xl text-white/80">
-                Stay with families, walk with farmers, eat what they grew.
-              </p>
-            </motion.div>
+            <HeroContent />
 
             {/* SEARCH BAR */}
-
             <div className="mt-10 rounded-2xl border border-white/30 bg-white/10 p-2 backdrop-blur-xl">
               <form className="grid md:grid-cols-[1.2fr_1fr_1fr_auto] gap-2">
                 <div className="flex items-center gap-2 rounded-xl bg-white px-4 py-3 text-black">
                   <MapPin size={18} />
+
                   <input
                     className="w-full outline-none"
                     placeholder="Tehri Lake"
@@ -123,13 +92,14 @@ const activitySkeletonCount = Math.max(
 
                 <div className="flex items-center gap-2 rounded-xl bg-white px-4 py-3 text-black">
                   <Users size={18} />
+
                   <input
                     className="w-full outline-none"
                     placeholder="Guests"
                   />
                 </div>
 
-                <Button>
+                <Button type="submit">
                   <Search className="mr-2 h-4 w-4" />
                   Search
                 </Button>
@@ -147,7 +117,6 @@ const activitySkeletonCount = Math.max(
       </section>
 
       {/* HOMESTAYS */}
-
       <section className="container-app py-24">
         <SectionHeader
           eyebrow="Hand-picked homestays"
@@ -156,21 +125,25 @@ const activitySkeletonCount = Math.max(
         />
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {homestays.slice(0, 4).map((h, i) => (
-            <HomestayCard key={h.id} h={h} index={i} />
+          {homestays.slice(0, 4).map((h: any, i: number) => (
+            <HomestayCard
+              key={h._id}
+              h={h}
+              index={i}
+            />
           ))}
+
           {Array.from({
-  length: skeletonCount,
-}).map((_, i) => (
-  <HomestaySkeletonCard
-    key={`homestay-skeleton-${i}`}
-  />
-))}
+            length: homestaySkeletonCount,
+          }).map((_, i) => (
+            <HomestaySkeletonCard
+              key={`homestay-skeleton-${i}`}
+            />
+          ))}
         </div>
       </section>
 
       {/* ACTIVITIES */}
-
       <section className="bg-surface py-24">
         <div className="container-app">
           <SectionHeader
@@ -180,28 +153,29 @@ const activitySkeletonCount = Math.max(
           />
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-           {activitiesData.map((a, i) => (
-  <ActivityCard
-    key={a._id}
-    a={a}
-    index={i}
-  />
-))}
+            {activitiesData
+              .slice(0, 6)
+              .map((a: any, i: number) => (
+                <ActivityCard
+                  key={a._id}
+                  a={a}
+                  index={i}
+                />
+              ))}
 
-{Array.from({
-  length: activitySkeletonCount,
-}).map((_, i) => (
-  <ActivitySkeletonCard
-    key={`activity-skeleton-${i}`}
-    index={i}
-  />
-))}
+            {Array.from({
+              length: activitySkeletonCount,
+            }).map((_, i) => (
+              <ActivitySkeletonCard
+                key={`activity-skeleton-${i}`}
+                index={i}
+              />
+            ))}
           </div>
         </div>
       </section>
 
       {/* EVENTS */}
-
       <section className="container-app py-24">
         <SectionHeader
           eyebrow="What's On"
@@ -209,33 +183,32 @@ const activitySkeletonCount = Math.max(
         />
 
         <div className="grid md:grid-cols-3 gap-6">
-          <>
- <>
-  {activitiesData.slice(0, 3).map((e, i) => (
-    <EventCard
-      key={e._id}
-      e={e}
-      index={i}
-      large
-    />
-  ))}
+          {activitiesData
+            .slice(0, 3)
+            .map((e: any, i: number) => (
+              <EventCard
+                key={e._id}
+                e={e}
+                index={i}
+                large
+              />
+            ))}
 
-  {Array.from({
-    length: Math.max(0, 3 - activitiesData.length),
-  }).map((_, i) => (
-    <div
-      key={`event-skeleton-${i}`}
-      className="aspect-[16/11] rounded-2xl bg-gray-200 animate-pulse"
-    />
-  ))}
-</>
-
- 
+          {Array.from({
+            length: Math.max(
+              0,
+              3 - activitiesData.length
+            ),
+          }).map((_, i) => (
+            <div
+              key={`event-skeleton-${i}`}
+              className="aspect-[16/11] rounded-2xl bg-gray-200 animate-pulse"
+            />
+          ))}
         </div>
       </section>
 
       {/* MARKETPLACE */}
-
       <section className="bg-cream py-24">
         <div className="container-app">
           <SectionHeader
@@ -244,31 +217,29 @@ const activitySkeletonCount = Math.max(
           />
 
           <div className="grid grid-cols-2 lg:grid-cols-6 gap-6">
+            {productsData
+              .slice(0, 6)
+              .map((p: any, i: number) => (
+                <ProductCard
+                  key={p._id}
+                  p={p}
+                  index={i}
+                />
+              ))}
 
-  {productsData.map((p, i) => (
-    <ProductCard
-      key={p._id}
-      p={p}
-      index={i}
-    />
-  ))}
-
-  {Array.from({
-    length: productSkeletonCount,
-  }).map((_, i) => (
-    <div
-      key={`product-skeleton-${i}`}
-      className="h-64 rounded-xl bg-gray-200 animate-pulse"
-    />
-  ))}
-
-</div>
+            {Array.from({
+              length: productSkeletonCount,
+            }).map((_, i) => (
+              <div
+                key={`product-skeleton-${i}`}
+                className="h-64 rounded-xl bg-gray-200 animate-pulse"
+              />
+            ))}
           </div>
-        
+        </div>
       </section>
 
       {/* IMPACT */}
-
       <section className="container-app py-24">
         <div className="grid md:grid-cols-2 gap-10">
           <div>
@@ -282,38 +253,29 @@ const activitySkeletonCount = Math.max(
           </div>
 
           <div className="grid grid-cols-2 gap-8">
-            <Stat value={248} label="Homestays" />
-            <Stat value={37} label="Villages" />
-            <Stat value={612} label="Women earning" />
-            <Stat value={92} suffix="%" label="Revenue retained" />
+            <Stat
+              value={248}
+              label="Homestays"
+            />
+
+            <Stat
+              value={37}
+              label="Villages"
+            />
+
+            <Stat
+              value={612}
+              label="Women earning"
+            />
+
+            <Stat
+              value={92}
+              suffix="%"
+              label="Revenue retained"
+            />
           </div>
         </div>
       </section>
-
-      {/* TESTIMONIALS */}
-
-      {/* <section className="bg-black text-white py-24">
-        <div className="container-app">
-          <h2 className="text-5xl font-bold max-w-3xl">
-            It feels less like a booking and more like coming home.
-          </h2>
-
-          <div className="grid lg:grid-cols-4 gap-6 mt-12">
-            {testimonials.map((t) => (
-              <div key={t.id} className="rounded-2xl bg-white/5 p-6">
-                <Quote size={18} />
-
-                <p className="mt-4">{t.quote}</p>
-
-                <div className="mt-5">
-                  <p>{t.author}</p>
-                  <p className="text-sm text-white/60">{t.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
     </SiteShell>
   );
 }

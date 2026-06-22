@@ -1,18 +1,22 @@
-import {connect} from "@/dbConfig/dbConfig";
+import { connect } from "@/dbConfig/dbConfig";
 import User from "@/model/userModel";
 import {NextRequest, NextResponse} from "next/server";
 import bcryptjs from "bcryptjs";
 
 
 
-connect();
+// ensure DB connected when handler runs
+try {
+    void connect();
+} catch {
+    // connection errors will be handled per-request
+}
 
 export async function POST(request: NextRequest){
     try{
         const reqBody = await request.json();
         const { username, email, password, role } = reqBody;
-        console.log(reqBody);
-        const user =  await User.findOne({email})
+        const user = await User.findOne({ email });
         if(user){
             return NextResponse.json({error: "User already exists"}, {status: 400})
         }
@@ -27,17 +31,21 @@ export async function POST(request: NextRequest){
             role,
         });
 
-        const savedUser = await newUser.save()
-        console.log(savedUser);
-        
-        return NextResponse.json({
-        message: "User created successfully",
-        success: true,
-        savedUser
-    })
+                const savedUser = await newUser.save();
 
-    }catch(error: any){
-        return NextResponse.json({error: error.message},
-            {status: 500})
+                return NextResponse.json({
+                    message: "User created successfully",
+                    success: true,
+                    user: {
+                        id: savedUser._id,
+                        username: savedUser.username,
+                        email: savedUser.email,
+                        role: savedUser.role,
+                    },
+                });
+
+    } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ error: msg }, { status: 500 });
     }
 }

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { Calendar, MapPin, Ticket } from "lucide-react";
-import type { EventItem } from "../../../types/event";
+import type { EventItem } from "@/types/event";
 import { inr } from "./format";
 import { motion } from "framer-motion";
 

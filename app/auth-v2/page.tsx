@@ -22,10 +22,7 @@ export default function AuthV2() {
       setLoading(true);
       setMessage("");
 
-      const response = await axios.post(
-        "/api/users/signup",
-        user
-      );
+      await axios.post("/api/users/signup", user);
 
       setMessage("Account created successfully!");
 
@@ -33,10 +30,13 @@ setTimeout(() => {
   setIsLogin(true);
   setMessage("");
 }, 1500);
-    } catch (error: any) {
-      setMessage(
-        error.response?.data?.error || "Signup failed"
-      );
+    } catch (error) {
+      let errMsg = "Signup failed";
+      if (error instanceof Error) errMsg = error.message;
+      // try to extract API error
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((error as any)?.response?.data?.error) errMsg = (error as any).response.data.error;
+      setMessage(errMsg);
     } finally {
       setLoading(false);
     }
@@ -47,23 +47,22 @@ setTimeout(() => {
       setLoading(true);
       setMessage("");
 
-      const response = await axios.post(
-        "/api/users/login",
-        {
-          email: user.email,
-          password: user.password,
-        }
-      );
+      await axios.post("/api/users/login", {
+        email: user.email,
+        password: user.password,
+      });
 
       setMessage("Login successful!");
 
 setTimeout(() => {
   router.push("/dashboard");
 }, 1000);
-    } catch (error: any) {
-      setMessage(
-        error.response?.data?.error || "Login failed"
-      );
+    } catch (error) {
+      let errMsg = "Login failed";
+      if (error instanceof Error) errMsg = error.message;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((error as any)?.response?.data?.error) errMsg = (error as any).response.data.error;
+      setMessage(errMsg);
     } finally {
       setLoading(false);
     }

@@ -26,7 +26,7 @@ export default function AuthPage() {
   ) => {
     e.preventDefault();
 
-    console.log(formData);
+    // formData submitted
 
     /*
       FUTURE BACKEND INTEGRATION
@@ -80,8 +80,8 @@ export default function AuthPage() {
             and Businesses
           </h2>
 
-          <p className="text-lg leading-relaxed text-green-50">
-            Discover Tehri's culture,
+            <p className="text-lg leading-relaxed text-green-50">
+            Discover Tehri&apos;s culture,
             support local artisans,
             connect with businesses,
             and experience sustainable

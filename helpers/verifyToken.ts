@@ -8,7 +8,7 @@ export const verifyToken = (token: string) => {
     );
 
     return decoded;
-  } catch (error) {
+  } catch {
     return null;
   }
 };

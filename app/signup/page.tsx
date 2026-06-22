@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import {toast} from "react-hot-toast";
@@ -15,40 +15,35 @@ export default function SignupPage() {
     username: "",
   });
 
-  const [buttonDisabled, setButtonDisabled] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
+
+  const isButtonDisabled = !(
+    user.email.length > 0 &&
+    user.password.length > 0 &&
+    user.username.length > 0
+  );
 
   const onSignup = async () => {
     try {
-        setLoading(true);
-        const response = await axios.post("/api/users/signup", user);
-      console.log("Signup success", response.data);
+      setLoading(true);
+      await axios.post("/api/users/signup", user);
+      toast.success("Signup successful");
       router.push("/login");
 
       // Example API call
       // await axios.post("/api/users/signup", user);
 
       //router.push("/dashboard");
-    } catch (error:any) {
-      console.log("Signup failed", error.message);
-      toast.error(error.message);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      toast.error(msg || "Signup failed");
     }
     finally{
       setLoading(false)
     }
   };
 
-  useEffect(() => {
-    if (
-      user.email.length > 0 &&
-      user.password.length > 0 &&
-      user.username.length > 0
-    ) {
-      setButtonDisabled(false);
-    } else {
-      setButtonDisabled(true);
-    }
-  }, [user]);
+  // derived state: isButtonDisabled
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
@@ -93,9 +88,9 @@ export default function SignupPage() {
 
       <button
         onClick={onSignup}
-        disabled={buttonDisabled}
+        disabled={isButtonDisabled}
         className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 disabled:opacity-50"
-      > {buttonDisabled ? "No signup": "Signup"}
+      > {isButtonDisabled ? "No signup": "Signup"}
       </button>
 
       <Link href="/login">Visit Login Page</Link>

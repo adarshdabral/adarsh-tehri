@@ -1,4 +1,6 @@
-import { Link } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
 import { Logo } from "./Logo";
 import { partners } from "@/data";
 import { Input } from "@/components/ui/input";
@@ -31,7 +33,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-sm">
               {col.links.map(([label, to]) => (
                 <li key={label}>
-                  <Link to={to} className="text-foreground/80 transition hover:text-foreground">{label}</Link>
+                  <Link href={to} className="text-foreground/80 transition hover:text-foreground">{label}</Link>
                 </li>
               ))}
             </ul>

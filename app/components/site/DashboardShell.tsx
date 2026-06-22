@@ -1,5 +1,8 @@
+"use client";
+
 import type { ReactNode } from "react";
-import { Link, useLocation } from "@tanstack/react-router";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { SiteShell } from "./SiteShell";
 import { useApp } from "@/stores/app-store";
 import { demoUsers } from "@/data";
@@ -39,7 +42,7 @@ const NAV: Record<string, { to: string; label: string }[]> = {
 export function DashboardShell({ role, title, sub, children }: { role: keyof typeof NAV; title: string; sub?: string; children: ReactNode }) {
   const userId = useApp((s) => s.currentUserId);
   const user = demoUsers.find((u) => u.id === userId)!;
-  const loc = useLocation();
+  const pathname = usePathname();
 
   return (
     <SiteShell>
@@ -65,9 +68,9 @@ export function DashboardShell({ role, title, sub, children }: { role: keyof typ
         <aside>
           <nav className="sticky top-24 space-y-1">
             {NAV[role].map((n) => {
-              const active = loc.pathname === n.to;
+              const active = pathname === n.to;
               return (
-                <Link key={n.to} to={n.to} className={`block rounded-lg px-3 py-2 text-sm transition ${active ? "bg-foreground text-background" : "text-foreground/80 hover:bg-muted"}`}>
+                <Link key={n.to} href={n.to} className={`block rounded-lg px-3 py-2 text-sm transition ${active ? "bg-foreground text-background" : "text-foreground/80 hover:bg-muted"}`}>
                   {n.label}
                 </Link>
               );

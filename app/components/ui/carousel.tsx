@@ -95,11 +95,13 @@ const Carousel = React.forwardRef<
       return;
     }
 
-    onSelect(api);
+    // defer initial selection handling to avoid sync setState inside effect
+    const id = setTimeout(() => onSelect(api), 0);
     api.on("reInit", onSelect);
     api.on("select", onSelect);
 
     return () => {
+      clearTimeout(id);
       api?.off("select", onSelect);
     };
   }, [api, onSelect]);
