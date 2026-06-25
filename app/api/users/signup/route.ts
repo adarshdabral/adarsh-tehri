@@ -14,8 +14,16 @@ try {
 
 export async function POST(request: NextRequest){
     try{
+        await connect();
+
         const reqBody = await request.json();
-        const { username, email, password, role } = reqBody;
+        const {
+  username,
+  email,
+  password,
+  role,
+  phone,
+} = reqBody;
         const user = await User.findOne({ email });
         if(user){
             return NextResponse.json({error: "User already exists"}, {status: 400})
@@ -25,11 +33,12 @@ export async function POST(request: NextRequest){
         (password, salt)
 
         const newUser = new User({
-            username,
-            email,
-            password: hashedPassword,
-            role,
-        });
+  username,
+  email,
+  phone,
+  password: hashedPassword,
+  role,
+});
 
                 const savedUser = await newUser.save();
 
