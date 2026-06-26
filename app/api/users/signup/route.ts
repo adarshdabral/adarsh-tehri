@@ -5,15 +5,9 @@ import bcryptjs from "bcryptjs";
 
 
 
-// ensure DB connected when handler runs
-try {
-    void connect();
-} catch {
-    // connection errors will be handled per-request
-}
-
 export async function POST(request: NextRequest){
     try{
+        await connect();
         const reqBody = await request.json();
         const { username, email, password, role } = reqBody;
         const user = await User.findOne({ email });

@@ -27,6 +27,8 @@ import { ActivitySkeletonCard } from "@/components/site/ActivitySkeletonCard";
 
 import { HeroContent } from "@/components/site/HeroContent";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const [
     homestays,

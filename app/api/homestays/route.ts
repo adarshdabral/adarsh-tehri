@@ -2,13 +2,9 @@ import { NextResponse } from "next/server";
 import { connect } from "@/dbConfig/dbConfig";
 import Homestay from "@/model/Homestay";
 
-// prefer connecting lazily inside handlers
-try {
-  void connect();
-} catch {}
-
 export async function GET() {
   try {
+    await connect();
     const homestays = await Homestay.find({ isActive: true });
 
     return NextResponse.json({
