@@ -29,6 +29,21 @@ const bookingSchema = new mongoose.Schema(
       default: 1,
       min: 1,
     },
+    roomsBooked: {
+  type: Number,
+  default: 1,
+  min: 1,
+},
+
+totalPrice: {
+  type: Number,
+  required: true,
+  default: 0,
+},
+
+cancelledAt: {
+  type: Date,
+},
 
     bookingStatus: {
       type: String,

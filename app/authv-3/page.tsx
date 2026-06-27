@@ -14,7 +14,7 @@ export default function AuthV3() {
     email: "",
     phone: "",
     password: "",
-    role: "consumer",
+    role: "tourist",
   });
 
   const [loading, setLoading] = useState(false);
@@ -55,16 +55,39 @@ export default function AuthV3() {
       setLoading(true);
       setMessage("");
 
-      await axios.post("/api/users/login", {
-        email: user.email,
-        password: user.password,
-      });
+      const response = await axios.post(
+  "/api/users/login",
+  {
+    email: user.email,
+    password: user.password,
+  }
+);
 
-      setMessage("Login successful!");
+const role = response.data.role;
 
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 1000);
+setMessage("Login successful!");
+
+setTimeout(() => {
+  if (role === "tourist") {
+    router.push("/tourist-dashboard");
+  }
+
+  else if (role === "vendor") {
+    router.push("/vendor-dashboard");
+  }
+
+  else if (role === "organizer") {
+    router.push("/organizer-dashboard");
+  }
+
+  else if (role === "homestay_host") {
+    router.push("/homestay-dashboard");
+  }
+
+  else {
+  setMessage("Invalid user role");
+}
+}, 1000);
     } catch (error) {
       let errMsg = "Login failed";
       if (error instanceof Error) errMsg = error.message;
@@ -268,13 +291,21 @@ export default function AuthV3() {
                 }
                 className="w-full h-14 px-4 rounded-md border border-[#D8D1C2] bg-white outline-none focus:border-[#9AA14E]"
               >
-                <option value="consumer">
-                  Consumer
-                </option>
+                <option value="tourist">
+  Tourist
+</option>
 
-                <option value="business_owner">
-                  Business Owner
-                </option>
+<option value="homestay_host">
+  Homestay Host
+</option>
+
+<option value="vendor">
+  Vendor
+</option>
+
+<option value="organizer">
+  Organizer
+</option>
               </select>
             )}
 

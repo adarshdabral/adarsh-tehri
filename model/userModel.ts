@@ -3,8 +3,13 @@ import mongoose, { Document, Model } from "mongoose";
 export interface IUser extends Document {
   username: string;
   email: string;
+  phone: string;
   password: string;
-  role: "consumer" | "business_owner";
+  role:
+  | "tourist"
+  | "homestay_host"
+  | "vendor"
+  | "organizer";
   isVerified: boolean;
   isAdmin: boolean;
   forgotPasswordToken?: string;
@@ -24,15 +29,24 @@ const userSchema = new mongoose.Schema<IUser>({
     required: [true, "Please provide a email"],
     unique: true,
   },
+  phone: {
+  type: String,
+  required: true,
+},
   password: {
     type: String,
     required: [true, "Please provide a password"],
   },
   role: {
-    type: String,
-    enum: ["consumer", "business_owner"],
-    default: "consumer",
-  },
+  type: String,
+  enum: [
+    "tourist",
+    "homestay_host",
+    "vendor",
+    "organizer",
+  ],
+  default: "tourist",
+},
   isVerified: {
     type: Boolean,
     default: false,

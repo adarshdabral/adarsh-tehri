@@ -44,21 +44,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Server misconfiguration" }, { status: 500 });
     }
 
-    const token = jwt.sign(tokenData, tokenSecret, { expiresIn: "1d" });
+    const token = jwt.sign(tokenData, tokenSecret, {
+  expiresIn: "1d",
+});
 
-    const response = NextResponse.json({
-      message: "Login successful",
-      success: true,
-    });
+const response = NextResponse.json({
+  message: "Login successful",
+  success: true,
+  role: user.role,
+});
 
-    response.cookies.set("token", token, {
-      httpOnly: true,
-      path: "/",
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    });
+response.cookies.set("token", token, {
+  httpOnly: true,
+  path: "/",
+  sameSite: "lax",
+  secure: process.env.NODE_ENV === "production",
+});
 
-    return response;
+return response;
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     return NextResponse.json(

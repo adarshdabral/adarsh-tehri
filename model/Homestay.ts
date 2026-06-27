@@ -51,14 +51,26 @@ const homestaySchema = new mongoose.Schema(
     },
 
     hostId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
-    },
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "users",
+},
 
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
+totalRooms: {
+  type: Number,
+  required: true,
+  default: 1,
+},
+
+availableRooms: {
+  type: Number,
+  required: true,
+  default: 1,
+},
+
+isActive: {
+  type: Boolean,
+  default: true,
+},
   },
   {
     timestamps: true,

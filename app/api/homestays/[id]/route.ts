@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { NextResponse } from "next/server";
 import { connect } from "@/dbConfig/dbConfig";
 import Homestay from "@/model/Homestay";
@@ -36,3 +37,5 @@ export async function GET(
     );
   }
 }
+=======
+>>>>>>> 07712eb27f6ed0945482743a8fe22341943158ce
