@@ -5,6 +5,7 @@ import { connect } from "@/dbConfig/dbConfig";
 import Booking from "@/model/Booking";
 import Homestay from "@/model/Homestay";
 import User from "@/model/userModel";
+import { calculateDynamicPrice } from "@/lib/pricing";
 
 try {
   void connect();
@@ -288,18 +289,24 @@ export async function POST(request: NextRequest) {
       
 
     const numberOfNights =
-      Math.ceil(
-        (
-          checkOut.getTime() -
-          checkIn.getTime()
-        ) /
-          (1000 * 60 * 60 * 24)
-      );
+  Math.ceil(
+    (
+      checkOut.getTime() -
+      checkIn.getTime()
+    ) /
+      (1000 * 60 * 60 * 24)
+  );
 
-    const totalPrice =
-      homestay.price *
-      roomCount *
-      numberOfNights;
+const pricing =
+  calculateDynamicPrice(
+    homestay.price,
+    checkIn,
+    numberOfNights
+  );
+
+const totalPrice =
+  pricing.totalPrice *
+  roomCount;
 
     // Create Booking
 
@@ -341,6 +348,7 @@ export async function POST(request: NextRequest) {
         message:
           "Booking created successfully",
         booking: booking[0],
+    pricingBreakdown: pricing.pricingBreakdown,
       },
       {
         status: 201,

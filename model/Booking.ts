@@ -45,11 +45,27 @@ cancelledAt: {
   type: Date,
 },
 
-    bookingStatus: {
-      type: String,
-      enum: ["pending", "confirmed", "cancelled", "completed"],
-      default: "pending",
-    },
+cancelReason: {
+  type: String,
+  trim: true,
+  maxlength: 300,
+},
+
+cancelledBy: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "users",
+},
+
+bookingStatus: {
+  type: String,
+  enum: [
+    "pending",
+    "confirmed",
+    "cancelled",
+    "completed",
+  ],
+  default: "pending",
+},
   },
   {
     timestamps: true,
