@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { NextResponse } from "next/server";
 import { connect } from "@/dbConfig/dbConfig";
 import Homestay from "@/model/Homestay";
@@ -9,6 +8,7 @@ export async function GET(
 ) {
   try {
     await connect();
+
     const { id } = await params;
 
     const homestay = await Homestay.findById(id);
@@ -22,12 +22,14 @@ export async function GET(
         { status: 404 }
       );
     }
+
     return NextResponse.json({
       success: true,
       homestay,
     });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
+
     return NextResponse.json(
       {
         success: false,
@@ -37,5 +39,3 @@ export async function GET(
     );
   }
 }
-=======
->>>>>>> 07712eb27f6ed0945482743a8fe22341943158ce
