@@ -1,13 +1,9 @@
 import mongoose from "mongoose";
 
-type ConnectionObject = {
-  isConnected?: number;
-};
-
 declare global {
   var mongoose: {
-    conn: typeof mongoose | null;
-    promise: Promise<typeof mongoose> | null;
+    conn: any;
+    promise: Promise<any> | null;
   };
 }
 
@@ -17,7 +13,7 @@ if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
-export async function connect(): Promise<typeof mongoose> {
+export async function connect(): Promise<any> {
   if (cached.conn) {
     return cached.conn;
   }
