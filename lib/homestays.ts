@@ -1,4 +1,4 @@
-import { connect } from "@/dbConfig/dbConfig"; // adjust path if needed
+import { connect } from "@/dbConfig/dbConfig";
 import Homestay from "@/model/Homestay";
 
 export async function getLandingHomestays() {
@@ -10,6 +10,8 @@ export async function getLandingHomestays() {
     .sort({ createdAt: -1 })
     .limit(4)
     .lean();
+
+  console.log("Homestays fetched:", homestays);
 
   return JSON.parse(JSON.stringify(homestays));
 }
